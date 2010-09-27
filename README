@@ -3,4 +3,15 @@ Voxeo VoiceObjects Project VOQuestionaire
 A questionaire application for VoiceObjects. 
 A dynamic collection of questions is presented to the calller. The feedback is collected per question. 
 
+In this repository you can find the VoiceObjects export file (questionaire.xml) as well as a sample collection, a SQL to get the Business Task data from your Infostore and the whole project documentation from the downloads section.
+
+The main idea is to have a Collection object which contains all the questions and all additional information (TTS texts or audios, Grammars and finally the answers to the question).
+Then we use a Loop object to walk through the Collection. Each question is presented to the caller and the answer is stored into the Collection.
+When the questionnaire is done the whole collection (or only the answers) can be sent to any backend.
+Additionally I have added some Business Tasks to the project which track the answers as well and the completion of the questionnaire.
+
+To make this a real-world example it would be needed to dynamically load the Collection data (e.g. from a Connector) and to store the resulting collection to a backend (also with a Connector).
+
+
+
 Kai Schmitte for Voxeo 2010
