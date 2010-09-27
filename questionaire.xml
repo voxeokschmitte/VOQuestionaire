@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VoiceObjectsXML version="9.1">
+    <!-- Project: Questionaire -->
+    <!-- Project Version: Version 2.1 -->
+    <!-- Library: false -->
+    <!-- Exported: September 27, 2010 12:25 -->
+    <module dialogEndProcessing="/**log**/#LogQuestionInfoCollection" historyTracking="true" inheritDEP="true" name="startHere">
+        <output usage="welcome">
+            <outputItem bargein="default" channel="default" inputMode="default" language="default" occurrence="always">
+                <text random="disabled" textFileExtension="none"><![CDATA[Starting the Questionaire]]></text>
+            </outputItem>
+        </output>
+        <sequence>
+            <expression link="#startBTQuestionaireFinished"/>
+            <loop link="#Questionnaire Main Loop"/>
+            <expression link="#stopBTQuestionaireFinished"/>
+        </sequence>
+        <eventHandling inheritance="true"/>
+        <customNavigation inheritance="true"/>
+        <tuning inheritance="true"/>
+        <osdmItems inheritance="true"/>
+    </module>
+    <input autoAdvanceNoInput="false" autoAdvanceNoMatch="false" maskCallerInput="false" name="Question">
+        <sequence usage="preprocessing">
+            <expression link="#Reset answer variable"/>
+        </sequence>
+        <output type="initial">
+            <outputItem bargein="default" channel="voice" inputMode="default" language="default" occurrence="always">
+                <expression link="#Question prompt initial"/>
+                <text random="disabled" textFileExtension="none"><![CDATA[ ]]></text>
+            </outputItem>
+        </output>
+        <grammar>
+            <grammarItem channel="voice">
+                <grammarDefinition embeddedRef="/**expression**/#Question dtmf grammar" grammarFileExtension="GRM" grammarPrecedence="default" grammarType="default" mode="dtmf" ttg="true"/>
+            </grammarItem>
+        </grammar>
+        <resultHandling>
+            <item object="/**variable**/#answer" removeSpaces="false"/>
+        </resultHandling>
+        <eventHandling inheritance="true">
+            <eventHandlingItem channel="voice" continuation="return" errorCodeFilter="false" eventType="noInput" finishTasks="none" occurrence="1" sendNotification="false">
+                <output link="#Question prompt NoInput1"/>
+            </eventHandlingItem>
+            <eventHandlingItem channel="voice" continuation="return" errorCodeFilter="false" eventType="noInput" finishTasks="none" occurrence="2" sendNotification="false">
+                <output link="#Question prompt NoInput2"/>
+            </eventHandlingItem>
+            <eventHandlingItem channel="voice" continuation="return" errorCodeFilter="false" eventType="noMatch" finishTasks="none" occurrence="1" sendNotification="false">
+                <output link="#Question prompt NoMatch1"/>
+            </eventHandlingItem>
+            <eventHandlingItem channel="voice" continuation="return" errorCodeFilter="false" eventType="noMatch" finishTasks="none" occurrence="2" sendNotification="false">
+                <output link="#Question prompt NoMatch2"/>
+            </eventHandlingItem>
+        </eventHandling>
+        <customNavigation inheritance="true">
+            <hyperlink autoAdvanceDirection="destination" autoAdvanceNoInput="false" autoAdvanceNoMatch="false" channel="voice" continuation="proceed" finishTasks="none" label="Skip" mode="object" object="/**expression**/#Set answer = 99">
+                <grammar link="#Skip - *" usage="activation"/>
+            </hyperlink>
+        </customNavigation>
+        <tuning inheritance="true"/>
+    </input>
+    <output name="Question prompt NoInput1">
+        <outputItem bargein="default" channel="voice" inputMode="default" language="default" occurrence="always">
+            <expression link="#Question prompt NoInput1"/>
+        </outputItem>
+    </output>
+    <output name="Question prompt NoInput2">
+        <outputItem bargein="default" channel="voice" inputMode="default" language="default" occurrence="always">
+            <expression link="#Question prompt NoInput2"/>
+            <text random="disabled" textFileExtension="none"><![CDATA[ ]]></text>
+            <silence link="#1 second"/>
+        </outputItem>
+    </output>
+    <output name="Question prompt NoMatch1">
+        <outputItem bargein="default" channel="voice" inputMode="default" language="default" occurrence="always">
+            <expression link="#Question prompt NoMatch1"/>
+        </outputItem>
+    </output>
+    <output name="Question prompt NoMatch2">
+        <outputItem bargein="default" channel="voice" inputMode="default" language="default" occurrence="always">
+            <expression link="#Question prompt NoMatch2"/>
+            <silence link="#1 second"/>
+        </outputItem>
+    </output>
+    <silence duration="1" name="1 second"/>
+    <grammar name="Skip - *">
+        <grammarItem channel="voice">
+            <grammarDefinition grammarFileExtension="GRM" grammarPrecedence="default" grammarType="default" mode="dtmf" ttg="true"><![CDATA[*]]></grammarDefinition>
+        </grammarItem>
+    </grammar>
+    <log name="LogQuestionInfoCollection">
+        <logItem category="info" destination="default" occurrence="always">
+            <collection link="#Question Info"/>
+            <text random="disabled" textFileExtension="none"><![CDATA[ ]]></text>
+        </logItem>
+    </log>
+    <resourceLocator allowServiceOverwrite="false" base="/**resourceLocator**/#Base Locator" name="Audio Location" physicalPath="en-UK/">
+        <expression link="#Audio path (language dependent)"/>
+    </resourceLocator>
+    <resourceLocator allowServiceOverwrite="false" name="Base Locator" physicalPath="/set_by_app_defaults/" referenceID="base_locator" shortDescription="Set by the application defaults file."/>
+    <variable name="Locale" referenceID="locale" shortDescription="Contains the locale chosen by the caller (or the default locale), e.g. en-US or fr-FR">
+        <value><![CDATA[en-US]]></value>
+    </variable>
+    <variable name="Question Index" referenceID="question_index" shortDescription="Points to the current question">
+        <value><![CDATA[1]]></value>
+    </variable>
+    <variable name="answer" referenceID="answer" shortDescription="Callers answer to the most recent question"/>
+    <collection name="Question Info" referenceID="question_info" shortDescription="This collection can be filled from an application defaults file or from a connector.">
+        <value><![CDATA[<root>
+	<row>
+		<col name="key">1</col>
+		<col name="initial">This is question one. Please press 1 to 6.</col>
+		<col name="NI1">I'm sorry, I couldn't get your key</col>
+		<col name="NI2">I'm sorry, I couldn't get your key again. Please press 1 to 6.</col>
+		<col name="NM1">Oh, I couldn't understand what you typed. Please press the key again.</col>
+		<col name="NM2">I still wasn't able to understand. Please press 1 to 6.</col>
+		<col name="SkipNINM2">false</col>
+		<col name="dtmf">1,2,3,4,5,6</col>
+		<col name="result"></col>
+	</row>
+	<row>
+		<col name="key">2</col>
+		<col name="initial">Now we are at question one. Please press 1 to 6.</col>
+		<col name="NI1">I'm sorry, I couldn't get your key</col>
+		<col name="NI2">I'm sorry, I couldn't get your key again. Please press 1 to 9.</col>
+		<col name="NM1">Oh, I couldn't understand what you typed. Please press the key again.</col>
+		<col name="NM2">I still wasn't able to understand. Please press 1 to 9.</col>>
+		<col name="SkipNINM2">false</col>
+		<col name="dtmf">1,2,3,4,5,6,7,8,9</col>
+		<col name="result"></col>
+	</row>
+</root>
+<!--<root>
+<row> 
+<col name="information">set_by_app_defaults</col>
+</row>
+</root>-->]]></value>
+    </collection>
+    <expression function="assign" name="Add answer data to collection">
+        <argument object="/**collection**/#Question Info"/>
+        <argument object="/**variable**/#Question Index"/>
+        <argument>
+            <value><![CDATA[result]]></value>
+        </argument>
+        <argument object="/**variable**/#answer"/>
+    </expression>
+    <expression function="concatenate" name="Audio path (language dependent)">
+        <argument object="/**variable**/#Locale"/>
+        <argument>
+            <value><![CDATA[/]]></value>
+        </argument>
+    </expression>
+    <expression function="plusassign" name="Increment Question Index" shortDescription="Increment Question Index by one">
+        <argument object="/**variable**/#Question Index"/>
+        <argument>
+            <value><![CDATA[1]]></value>
+        </argument>
+    </expression>
+    <expression function="index" name="Question dtmf grammar">
+        <argument object="/**collection**/#Question Info"/>
+        <argument object="/**variable**/#Question Index"/>
+        <argument>
+            <value><![CDATA[dtmf]]></value>
+        </argument>
+    </expression>
+    <expression function="index" name="Question prompt NoInput1">
+        <argument object="/**collection**/#Question Info"/>
+        <argument object="/**variable**/#Question Index"/>
+        <argument>
+            <value><![CDATA[NI1]]></value>
+        </argument>
+        <format>
+            <formatItem audioLocation="/**resourceLocator**/#Audio Location" channel="voice" extension="WAV" random="disabled" type="tta-files"/>
+        </format>
+    </expression>
+    <expression function="index" name="Question prompt NoInput2">
+        <argument object="/**collection**/#Question Info"/>
+        <argument object="/**variable**/#Question Index"/>
+        <argument>
+            <value><![CDATA[NI2]]></value>
+        </argument>
+        <format>
+            <formatItem audioLocation="/**resourceLocator**/#Audio Location" channel="voice" extension="WAV" random="disabled" type="tta-files"/>
+        </format>
+    </expression>
+    <expression function="index" name="Question prompt NoMatch1">
+        <argument object="/**collection**/#Question Info"/>
+        <argument object="/**variable**/#Question Index"/>
+        <argument>
+            <value><![CDATA[NM1]]></value>
+        </argument>
+        <format>
+            <formatItem audioLocation="/**resourceLocator**/#Audio Location" channel="voice" extension="WAV" random="disabled" type="tta-files"/>
+        </format>
+    </expression>
+    <expression function="index" name="Question prompt NoMatch2">
+        <argument object="/**collection**/#Question Info"/>
+        <argument object="/**variable**/#Question Index"/>
+        <argument>
+            <value><![CDATA[NM2]]></value>
+        </argument>
+        <format>
+            <formatItem audioLocation="/**resourceLocator**/#Audio Location" channel="voice" extension="WAV" random="disabled" type="tta-files"/>
+        </format>
+    </expression>
+    <expression function="index" name="Question prompt initial">
+        <argument object="/**collection**/#Question Info"/>
+        <argument object="/**variable**/#Question Index"/>
+        <argument>
+            <value><![CDATA[initial]]></value>
+        </argument>
+        <format>
+            <formatItem audioLocation="/**resourceLocator**/#Audio Location" channel="voice" extension="WAV" random="disabled" type="tta-files"/>
+        </format>
+    </expression>
+    <expression function="assign" name="Reset answer variable">
+        <argument object="/**variable**/#answer"/>
+    </expression>
+    <expression function="assign" name="Set answer = 99">
+        <argument object="/**variable**/#answer"/>
+        <argument>
+            <value><![CDATA[99]]></value>
+        </argument>
+    </expression>
+    <expression function="session" name="System:ANI" referenceID="Expression_sessionVariableani" shortDescription="Returns the phone number of the caller through Automatic Number Identification (ANI).">
+        <argument>
+            <value><![CDATA[ani]]></value>
+        </argument>
+    </expression>
+    <expression function="session" name="System:DNIS" referenceID="Expression_sessionVariablednis" shortDescription="Returns the phone number of the service through Dialed Number Identification Service (DNIS).">
+        <argument>
+            <value><![CDATA[dnis]]></value>
+        </argument>
+    </expression>
+    <expression function="dialogid" name="System:Dialog ID" referenceID="Expression_dialogid" shortDescription="Returns the unique ID of the dialog as a string of 44 characters."/>
+    <expression function="driver" name="System:Driver" referenceID="Expression_driver" shortDescription="Returns a string which represents the media platform driver information of the corresponding service (e.g. Nuance_VWS_2_0_VXML_2_0 or IBM_WVS_2_0_VXML_1_0)."/>
+    <expression function="driverasrengine" name="System:Driver ASR Engine" referenceID="Expression_speechEngine" shortDescription="Returns a string which represents the name of the ASR engine (e.g. Nuance or Telisma)."/>
+    <expression function="exitevent" name="System:Exit Event" referenceID="Expression_exitEvent" shortDescription="Returns a string providing the corresponding exit event ending the dialog. Valid return values are: None, Timeout, Exception, EndOfDialog, CallerHangup, CallerExit, Transfer."/>
+    <expression function="language" name="System:Language" referenceID="Expression_language" shortDescription="When used without an argument, returns the code of the currently active language (e.g. en-US or de-DE). When used with an argument, it sets the currently active language to this value. Note that the underlying media platform must be configured appropriately to support the language that is being set."/>
+    <expression function="modulehistory" name="System:Module History" referenceID="Expression_moduleHistory" shortDescription="Returns a comma-separated list of reference IDs of Module objects processed so far in the current dialog. When used without an argument the entire list will be returned, with the most current Module object at the top of the list. When used with an argument the value of the argument defines how far to go back in the processing history specifying where to start the list (e.g. level=1 means that the list starts with the previous Module object instead of the current one). If the specified level exceeds the size of the processing history an empty string is returned. NOTE: Only Module objects with the option &quot;Enable history tracking&quot; set to true are considered."/>
+    <expression function="modulerefid" name="System:Module Reference ID" referenceID="Expression_moduleName" shortDescription="Returns the reference ID of a Module object processed in the current dialog. When used without an argument the reference ID of the currently processed Module object is returned. When used with an argument ([level]) the reference ID of a parent object of the currently processed Module object is returned. The value of the argument specifies how far to go up in the tree of processed modules (e.g. level=1 means that the reference ID of the parent of the currently processed Module object is returned). If the specified level exceeds the depth of the module tree an empty string is returned."/>
+    <expression function="rows" name="Total number of questions">
+        <argument object="/**collection**/#Question Info"/>
+    </expression>
+    <expression function="starttask" name="startBTQuestion">
+        <argument object="/**businessTask**/#OVAP1f91165cc937f907f5359c8d0000012b52683169"/>
+    </expression>
+    <expression function="starttask" name="startBTQuestionaireFinished">
+        <argument object="/**businessTask**/#QuestionaireFinished"/>
+    </expression>
+    <expression function="finishtask" name="stopBTQuestion">
+        <argument object="/**businessTask**/#OVAP1f91165cc937f907f5359c8d0000012b52683169"/>
+        <argument>
+            <value><![CDATA[complete]]></value>
+        </argument>
+    </expression>
+    <expression function="finishtask" name="stopBTQuestionaireFinished">
+        <argument object="/**businessTask**/#QuestionaireFinished"/>
+        <argument>
+            <value><![CDATA[complete]]></value>
+        </argument>
+    </expression>
+    <loop name="Questionnaire Main Loop" prechecked="true">
+        <expression function="lessequal" shortDescription="Iterate over all questions" usage="condition">
+            <argument object="/**variable**/#Question Index"/>
+            <argument object="/**expression**/#Total number of questions"/>
+        </expression>
+        <sequence>
+            <expression link="#startBTQuestion"/>
+            <input link="#Question"/>
+            <expression link="#stopBTQuestion"/>
+            <expression link="#Add answer data to collection"/>
+            <expression link="#Increment Question Index"/>
+        </sequence>
+    </loop>
+    <businessTask name="Question" referenceID="OVAP1f91165cc937f907f5359c8d0000012b52683169" shortDescription="BT to track the answering of single questions. &#13;&#10;A second approach to log the answers" taskType="information" useComplete="false">
+        <parameterSet usage="complete">
+            <item alias="QuestionNumber" object="/**variable**/#Question Index"/>
+            <item alias="Answer" object="/**variable**/#answer"/>
+        </parameterSet>
+        <parameterSet usage="incomplete">
+            <item alias="QuestionNumber" object="/**variable**/#Question Index"/>
+        </parameterSet>
+    </businessTask>
+    <businessTask name="QuestionaireFinished" shortDescription="BT to check if the questionaire has been finished" taskType="transaction" useComplete="false">
+        <parameterSet usage="incomplete">
+            <item alias="LastQuestion" object="/**variable**/#Question Index"/>
+        </parameterSet>
+    </businessTask>
+</VoiceObjectsXML>

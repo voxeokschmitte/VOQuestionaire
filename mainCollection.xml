@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<row>
+		<col name="key">1</col>
+		<col name="initial">This is question one. Please press 1 to 6.</col>
+		<col name="NI1">I'm sorry, I couldn't get your key</col>
+		<col name="NI2">I'm sorry, I couldn't get your key again. Please press 1 to 6.</col>
+		<col name="NM1">Oh, I couldn't understand what you typed. Please press the key again.</col>
+		<col name="NM2">I still wasn't able to understand. Please press 1 to 6.</col>
+		<col name="dtmf">1,2,3,4,5,6</col>
+		<col name="result"></col>
+	</row>
+	<row>
+		<col name="key">2</col>
+		<col name="initial">Now we are at question two. Please press 1 to 6.</col>
+		<col name="NI1">I'm sorry, I couldn't get your key for question two</col>
+		<col name="NI2">I'm sorry, I couldn't get your key again. Please press 1 to 9.</col>
+		<col name="NM1">Oh, I couldn't understand what you typed. Please press the key again.</col>
+		<col name="NM2">I still wasn't able to understand. Please press 1 to 9.</col>>
+		<col name="dtmf">1,2,3,4,5,6,7,8,9</col>
+		<col name="result"></col>
+	</row>
+</root>
+
